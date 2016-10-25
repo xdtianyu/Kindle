@@ -2,7 +2,7 @@
  
 # This script generates environment variables for pull requests and forks.
  
-if [ -n "$encrypted_75846693d905_key" ] ; then
+if [ -n "$encrypted_fcd823279b44_key" ] ; then
     exit 0
 fi
  
