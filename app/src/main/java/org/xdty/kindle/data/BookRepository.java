@@ -3,6 +3,7 @@ package org.xdty.kindle.data;
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.module.Book;
 import org.xdty.kindle.module.Books;
+import org.xdty.kindle.module.database.Database;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +19,9 @@ public class BookRepository implements BookDataSource {
 
     @Inject
     BookService mBookService;
+
+    @Inject
+    Database mDatabase;
 
     public BookRepository() {
         Application.getAppComponent().inject(this);
@@ -41,12 +45,24 @@ public class BookRepository implements BookDataSource {
 
     @Override
     public Observable<List<Book>> getFreeCnBooks() {
-        return null;
+        return Observable.create(new Observable.OnSubscribe<List<Book>>() {
+            @Override
+            public void call(Subscriber<? super List<Book>> subscriber) {
+                subscriber.onNext(mDatabase.getCnBooksSync());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<Book>> getFreeEnBooks() {
-        return null;
+        return Observable.create(new Observable.OnSubscribe<List<Book>>() {
+            @Override
+            public void call(Subscriber<? super List<Book>> subscriber) {
+                subscriber.onNext(mDatabase.getEnBooksSync());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

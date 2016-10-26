@@ -6,5 +6,6 @@ public class Constants {
     //public final static String BASE_URL = "http://oe1kgsvca.bkt.clouddn.com/kindle.json";
 
     public final static String DB_NAME = "books.db";
+    public final static int DB_VERSION = 1;
 
 }

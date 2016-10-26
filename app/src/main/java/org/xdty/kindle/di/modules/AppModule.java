@@ -1,20 +1,30 @@
 package org.xdty.kindle.di.modules;
 
+import android.content.Context;
+
 import org.xdty.kindle.R;
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.data.BookDataSource;
 import org.xdty.kindle.data.BookRepository;
 import org.xdty.kindle.data.BookService;
+import org.xdty.kindle.module.Models;
 import org.xdty.kindle.module.database.Database;
 import org.xdty.kindle.module.database.DatabaseImpl;
 import org.xdty.kindle.utils.Constants;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.requery.Persistable;
+import io.requery.android.sqlite.DatabaseSource;
+import io.requery.sql.Configuration;
+import io.requery.sql.EntityDataStore;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -25,6 +35,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.xdty.kindle.utils.Constants.DB_NAME;
+import static org.xdty.kindle.utils.Constants.DB_VERSION;
 
 @Module
 public class AppModule {
@@ -36,7 +47,7 @@ public class AppModule {
         app = application;
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         Interceptor interceptor = new Interceptor() {
             @Override
@@ -90,8 +101,41 @@ public class AppModule {
     @Singleton
     @Provides
     public Database provideDatabase() {
-        DatabaseImpl.getInstance().init(app, DB_NAME, R.raw.books);
         return DatabaseImpl.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    public EntityDataStore<Persistable> provideDatabaseSource() {
+
+        raw2data(app, DB_NAME, R.raw.books);
+        Configuration configuration = new DatabaseSource(app, Models.DEFAULT, DB_NAME, DB_VERSION)
+                .getConfiguration();
+        return new EntityDataStore<>(configuration);
+    }
+
+    private void raw2data(Context context, String filename, int raw) {
+        File cacheFile = context.getDatabasePath(filename);
+
+        if (cacheFile.exists()) {
+            return;
+        }
+
+        try {
+            InputStream inputStream = context.getResources().openRawResource(raw);
+            FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
+
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, length);
+            }
+            fileOutputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
