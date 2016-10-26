@@ -52,6 +52,7 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 
@@ -59,6 +60,10 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.9'
     compile 'com.google.dagger:dagger:2.6'
     apt 'com.google.dagger:dagger-compiler:2.6'
+
+    compile 'io.requery:requery:1.0.1'
+    compile 'io.requery:requery-android:1.0.1'
+    apt 'io.requery:requery-processor:1.0.1'
 
     testCompile 'junit:junit:4.12'
 }

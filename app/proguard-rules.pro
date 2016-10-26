@@ -42,6 +42,10 @@
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
 
+-dontwarn okhttp3.**
+-keep class okhttp3.** { *;}
+-keep interface okhttp3.** { *; }
+
 -dontwarn retrofit.**
 -dontwarn retrofit.appengine.UrlFetchClient
 -keep class retrofit.** { *; }
