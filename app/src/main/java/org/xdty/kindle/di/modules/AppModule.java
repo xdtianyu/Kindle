@@ -47,7 +47,7 @@ public class AppModule {
         app = application;
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
 
         Interceptor interceptor = new Interceptor() {
             @Override

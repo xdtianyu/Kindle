@@ -3,7 +3,6 @@ package org.xdty.kindle.module.database;
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.module.Book;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +15,6 @@ public class DatabaseImpl implements Database {
     private final static int PAGE_SIZE = 50;
     @Inject
     EntityDataStore<Persistable> mDataStore;
-    private File mDbFile;
 
     private int mCurrentPage = 0;
 
@@ -30,12 +28,24 @@ public class DatabaseImpl implements Database {
 
     @Override
     public List<Book> getCnBooksSync() {
-        return mDataStore.select(Book.class).limit(PAGE_SIZE).offset(mCurrentPage).get().toList();
+        return mDataStore.select(Book.class)
+                .where(Book.LANGUAGES.eq("chinese"))
+                .or(Book.LANGUAGES.eq("traditional_chinese"))
+                .limit(PAGE_SIZE)
+                .offset(mCurrentPage)
+                .get()
+                .toList();
     }
 
     @Override
     public List<Book> getEnBooksSync() {
-        return null;
+        return mDataStore.select(Book.class)
+                .where(Book.LANGUAGES.ne("chinese"))
+                .and(Book.LANGUAGES.ne("traditional_chinese"))
+                .limit(PAGE_SIZE)
+                .offset(mCurrentPage)
+                .get()
+                .toList();
     }
 
     private static class SingletonHelper {
