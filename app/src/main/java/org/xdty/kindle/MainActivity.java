@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
                 mMode = Mode.FREE_CN;
                 break;
             case R.id.nav_free_english:
-                mMode = Mode.FREE_CN;
+                mMode = Mode.FREE_EN;
                 break;
             case R.id.nav_daily_deals:
                 mMode = Mode.DAILY_DEALS;
