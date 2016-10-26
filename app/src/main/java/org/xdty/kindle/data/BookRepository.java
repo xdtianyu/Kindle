@@ -24,7 +24,7 @@ public class BookRepository implements BookDataSource {
     }
 
     @Override
-    public Observable<List<Book>> getBooks() {
+    public Observable<List<Book>> getDailyBooks() {
         return Observable.create(new Observable.OnSubscribe<List<Book>>() {
             @Override
             public void call(Subscriber<? super List<Book>> subscriber) {
@@ -37,5 +37,28 @@ public class BookRepository implements BookDataSource {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<Book>> getFreeCnBooks() {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Book>> getFreeEnBooks() {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Book>> getBooks(Mode mode) {
+        switch (mode) {
+            case FREE_CN:
+                return getFreeCnBooks();
+            case FREE_EN:
+                return getFreeEnBooks();
+            case DAILY_DEALS:
+            default:
+                return getDailyBooks();
+        }
     }
 }

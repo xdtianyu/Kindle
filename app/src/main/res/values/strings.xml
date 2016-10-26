@@ -5,4 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="daily_deals">Daily Deals</string>
+    <string name="free_chinese">Free Chinese</string>
+    <string name="free_english">Free English</string>
+    <string name="settings">Settings</string>
 </resources>
