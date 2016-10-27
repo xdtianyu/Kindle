@@ -3,6 +3,7 @@ package org.xdty.kindle.data;
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.module.Book;
 import org.xdty.kindle.module.Books;
+import org.xdty.kindle.module.Node;
 import org.xdty.kindle.module.database.Database;
 
 import java.io.IOException;
@@ -76,5 +77,16 @@ public class BookRepository implements BookDataSource {
             default:
                 return getDailyBooks();
         }
+    }
+
+    @Override
+    public Observable<List<Node>> getBookNodes(final String itemId) {
+        return Observable.create(new Observable.OnSubscribe<List<Node>>() {
+            @Override
+            public void call(Subscriber<? super List<Node>> subscriber) {
+                subscriber.onNext(mDatabase.getBookNodesSync(itemId));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

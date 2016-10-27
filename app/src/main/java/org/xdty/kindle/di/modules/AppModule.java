@@ -109,8 +109,9 @@ public class AppModule {
     public EntityDataStore<Persistable> provideDatabaseSource() {
 
         raw2data(app, DB_NAME, R.raw.books);
-        Configuration configuration = new DatabaseSource(app, Models.DEFAULT, DB_NAME, DB_VERSION)
-                .getConfiguration();
+        DatabaseSource source = new DatabaseSource(app, Models.DEFAULT, DB_NAME, DB_VERSION);
+        source.setLoggingEnabled(true);
+        Configuration configuration = source.getConfiguration();
         return new EntityDataStore<>(configuration);
     }
 

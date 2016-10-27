@@ -16,6 +16,8 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
 
     private List<Book> mBooks = new ArrayList<>();
 
+    private ItemClickListener mItemClickListener;
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -41,18 +43,36 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
 
+    public interface ItemClickListener {
+        void onItemClick(Book book);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private Book mBook;
         private TextView title;
 
         ViewHolder(View view) {
             super(view);
 
             title = (TextView) view.findViewById(R.id.title);
+            view.setOnClickListener(this);
         }
 
         void bind(Book book) {
+            mBook = book;
             title.setText(book.getTitle());
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(mBook);
+            }
         }
     }
 }

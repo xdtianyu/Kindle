@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,6 +18,7 @@ import org.xdty.kindle.application.Application;
 import org.xdty.kindle.data.BookDataSource;
 import org.xdty.kindle.data.Mode;
 import org.xdty.kindle.module.Book;
+import org.xdty.kindle.module.Node;
 import org.xdty.kindle.view.BooksAdapter;
 
 import java.util.List;
@@ -28,18 +30,15 @@ import rx.functions.Action1;
 // TODO: mvp
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, BooksAdapter.ItemClickListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     @Inject
     BookDataSource mBookDataSource;
-
     private RecyclerView mRecyclerView;
     private Toolbar mToolbar;
-
     private DrawerLayout mDrawer;
-
     private BooksAdapter mBooksAdapter;
-
     private Mode mMode = Mode.DAILY_DEALS;
 
     @Override
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mBooksAdapter = new BooksAdapter();
+        mBooksAdapter.setItemClickListener(this);
 
         mRecyclerView.setAdapter(mBooksAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -132,5 +132,17 @@ public class MainActivity extends AppCompatActivity
         }
         loadBooks();
         return true;
+    }
+
+    @Override
+    public void onItemClick(Book book) {
+        if (book.getNodes() == null) {
+            mBookDataSource.getBookNodes(book.getItemId()).subscribe(new Action1<List<Node>>() {
+                @Override
+                public void call(List<Node> nodes) {
+                    Log.e(TAG, "nodes: " + nodes);
+                }
+            });
+        }
     }
 }

@@ -2,7 +2,12 @@ package org.xdty.kindle.module.database;
 
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.module.Book;
+import org.xdty.kindle.module.Node;
+import org.xdty.kindle.module.NodeMap;
+import org.xdty.kindle.module.NodeRelation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +51,52 @@ public class DatabaseImpl implements Database {
                 .offset(mCurrentPage)
                 .get()
                 .toList();
+    }
+
+    @Override
+    public List<Node> getBookNodesSync(String itemId) {
+
+        return getBookNodesSync(itemId, true);
+    }
+
+    @Override
+    public Node getNodeParentSync(long nodeId) {
+        return mDataStore.select(Node.class)
+                .where(Node.NODE_ID.in(mDataStore.select(NodeRelation.ANCESTOR)
+                        .where(NodeRelation.DESCENDANT.eq(nodeId)))).get().firstOrNull();
+    }
+
+    private List<Node> getBookNodesSync(String itemId, boolean withParent) {
+
+        List<NodeMap> list = mDataStore.select(NodeMap.class)
+                .where(NodeMap.ITEM_ID.in(Arrays.asList(itemId)))
+                .get()
+                .toList();
+
+        List<Long> l = new ArrayList<>();
+
+        for (NodeMap n : list) {
+            l.add(n.getNodeId());
+        }
+
+        // fixme: empty result
+        List<Node> nodes = mDataStore.select(Node.class)
+                .where(Node.NODE_ID.in(l))
+                .get()
+                .toList();
+
+        if (withParent) {
+            for (Node node : nodes) {
+                Node n;
+                do {
+                    n = getNodeParentSync(node.getNodeId());
+                    node.setNode(n);
+                    node = n;
+                } while (n != null);
+            }
+        }
+
+        return nodes;
     }
 
     private static class SingletonHelper {
