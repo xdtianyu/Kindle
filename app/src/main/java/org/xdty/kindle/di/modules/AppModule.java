@@ -3,6 +3,7 @@ package org.xdty.kindle.di.modules;
 import android.content.Context;
 import android.util.Log;
 
+import org.xdty.kindle.BuildConfig;
 import org.xdty.kindle.R;
 import org.xdty.kindle.application.Application;
 import org.xdty.kindle.data.BookDataSource;
@@ -11,6 +12,7 @@ import org.xdty.kindle.data.BookService;
 import org.xdty.kindle.module.Models;
 import org.xdty.kindle.module.database.Database;
 import org.xdty.kindle.module.database.DatabaseImpl;
+import org.xdty.kindle.module.database.DatabaseSource;
 import org.xdty.kindle.utils.Constants;
 
 import java.io.File;
@@ -23,7 +25,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
-import io.requery.android.sqlite.DatabaseSource;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
 import okhttp3.HttpUrl;
@@ -34,6 +35,9 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static org.xdty.kindle.utils.Constants.DB_NAME;
 import static org.xdty.kindle.utils.Constants.DB_VERSION;
@@ -109,11 +113,17 @@ public class AppModule {
     @Singleton
     @Provides
     public EntityDataStore<Persistable> provideDatabaseSource() {
+        Observable.<Void>just(null).observeOn(Schedulers.io()).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                raw2data(app, DB_NAME, R.raw.books);
+            }
+        });
 
-        raw2data(app, DB_NAME, R.raw.books);
         DatabaseSource source = new DatabaseSource(app, Models.DEFAULT, DB_NAME, DB_VERSION);
-        source.setLoggingEnabled(true);
+        source.setLoggingEnabled(BuildConfig.DEBUG);
         Configuration configuration = source.getConfiguration();
+
         return new EntityDataStore<>(configuration);
     }
 
@@ -127,8 +137,10 @@ public class AppModule {
             if (cacheFile.exists()) {
                 if (cacheFile.length() == inputStream.available()) {
                     return;
-                } else if(!cacheFile.delete()){
+                } else if (!cacheFile.delete()) {
                     Log.d(TAG, "cache file delete failed.");
+                } else {
+                    Log.d(TAG, "update cached database.");
                 }
             }
 

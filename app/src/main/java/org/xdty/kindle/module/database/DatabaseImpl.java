@@ -6,8 +6,6 @@ import org.xdty.kindle.module.Node;
 import org.xdty.kindle.module.NodeMap;
 import org.xdty.kindle.module.NodeRelation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,22 +66,8 @@ public class DatabaseImpl implements Database {
 
     private List<Node> getBookNodesSync(String itemId, boolean withParent) {
 
-        List<NodeMap> list = mDataStore.select(NodeMap.class)
-                .where(NodeMap.ITEM_ID.in(Arrays.asList(itemId)))
-                .get()
-                .toList();
-
-        mDataStore.transaction();
-
-        List<Long> l = new ArrayList<>();
-
-        for (NodeMap n : list) {
-            l.add(n.getNodeId());
-        }
-
-        // fixme: empty result
-        List<Node> nodes = mDataStore.select(Node.class)
-                .where(Node.NODE_ID.in(l))
+        List<Node> nodes = mDataStore.select(Node.class).where(Node.NODE_ID
+                .in(mDataStore.select(NodeMap.NODE_ID).where(NodeMap.ITEM_ID.eq(itemId))))
                 .get()
                 .toList();
 
