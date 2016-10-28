@@ -73,6 +73,8 @@ public class DatabaseImpl implements Database {
                 .get()
                 .toList();
 
+        mDataStore.transaction();
+
         List<Long> l = new ArrayList<>();
 
         for (NodeMap n : list) {

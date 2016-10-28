@@ -1,6 +1,7 @@
 package org.xdty.kindle.di.modules;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.xdty.kindle.R;
 import org.xdty.kindle.application.Application;
@@ -39,6 +40,7 @@ import static org.xdty.kindle.utils.Constants.DB_VERSION;
 
 @Module
 public class AppModule {
+    private static final String TAG = AppModule.class.getSimpleName();
 
     private Application app;
     private OkHttpClient mOkHttpClient;
@@ -116,14 +118,20 @@ public class AppModule {
     }
 
     private void raw2data(Context context, String filename, int raw) {
-        File cacheFile = context.getDatabasePath(filename);
-
-        if (cacheFile.exists()) {
-            return;
-        }
 
         try {
             InputStream inputStream = context.getResources().openRawResource(raw);
+
+            File cacheFile = context.getDatabasePath(filename);
+
+            if (cacheFile.exists()) {
+                if (cacheFile.length() == inputStream.available()) {
+                    return;
+                } else if(!cacheFile.delete()){
+                    Log.d(TAG, "cache file delete failed.");
+                }
+            }
+
             FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
 
             int bufferSize = 1024;
