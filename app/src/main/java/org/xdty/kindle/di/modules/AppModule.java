@@ -12,7 +12,6 @@ import org.xdty.kindle.data.BookService;
 import org.xdty.kindle.module.Models;
 import org.xdty.kindle.module.database.Database;
 import org.xdty.kindle.module.database.DatabaseImpl;
-import org.xdty.kindle.module.database.DatabaseSource;
 import org.xdty.kindle.utils.Constants;
 
 import java.io.File;
@@ -25,6 +24,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
+import io.requery.android.sqlite.DatabaseSource;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
 import okhttp3.HttpUrl;
