@@ -55,17 +55,23 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
 
         private Book mBook;
         private TextView title;
+        private TextView author;
+        private TextView pages;
 
         ViewHolder(View view) {
             super(view);
 
             title = (TextView) view.findViewById(R.id.title);
+            author = (TextView) view.findViewById(R.id.author);
+            pages = (TextView) view.findViewById(R.id.pages);
             view.setOnClickListener(this);
         }
 
         void bind(Book book) {
             mBook = book;
             title.setText(book.getTitle());
+            author.setText(book.getAuthor());
+            pages.setText(book.getPages());
         }
 
         @Override
