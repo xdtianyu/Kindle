@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity
                     Log.e(TAG, "nodes: " + nodes);
                 }
             });
+        } else {
+            Log.e(TAG, "nodes: " + book.getNodes());
         }
     }
 }

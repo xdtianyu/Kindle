@@ -7,6 +7,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.GsonBuilder;
 
 import org.xdty.kindle.BuildConfig;
 import org.xdty.kindle.R;
@@ -104,7 +106,9 @@ public class AppModule {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .client(mOkHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
+                        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                        .create()))
                 .build();
         return retrofit.create(BookService.class);
     }
