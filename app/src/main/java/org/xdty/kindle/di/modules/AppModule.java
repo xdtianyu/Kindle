@@ -3,6 +3,11 @@ package org.xdty.kindle.di.modules;
 import android.content.Context;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.model.GlideUrl;
+
 import org.xdty.kindle.BuildConfig;
 import org.xdty.kindle.R;
 import org.xdty.kindle.application.Application;
@@ -125,6 +130,14 @@ public class AppModule {
         Configuration configuration = source.getConfiguration();
 
         return new EntityDataStore<>(configuration);
+    }
+
+    @Singleton
+    @Provides
+    public RequestManager provideGlide() {
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(mOkHttpClient);
+        Glide.get(app).register(GlideUrl.class, InputStream.class, factory);
+        return Glide.with(app);
     }
 
     private void raw2data(Context context, String filename, int raw) {
