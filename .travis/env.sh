@@ -2,7 +2,7 @@
  
 # This script generates environment variables for pull requests and forks.
 
-export GIT_TAG = $(git describe --abbrev=0 --tags)
+export GIT_TAG=$(git describe --abbrev=0 --tags)
  
 if [ -n "$encrypted_fcd823279b44_key" ] ; then
     exit 0
