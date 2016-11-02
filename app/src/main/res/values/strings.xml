@@ -10,4 +10,15 @@
     <string name="free_english">Free English</string>
     <string name="settings">Settings</string>
     <string name="thumbnail">thumbnail</string>
+
+    <string name="search">Search</string>
+
+    <!-- app shortcuts -->
+    <string name="shortcut_search_short_label">@string/search</string>
+    <string name="shortcut_search_long_label">@string/search</string>
+    <string name="shortcut_search_disabled">Search not available</string>
+    <string name="shortcut_post_short_label">New Story</string>
+    <string name="shortcut_post_long_label">New Designer News story</string>
+    <string name="shortcut_post_disabled">Log in to Designer News to post a new story</string>
+
 </resources>
