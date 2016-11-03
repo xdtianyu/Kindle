@@ -14,39 +14,41 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.xdty.kindle.application.Application;
-import org.xdty.kindle.data.BookDataSource;
+import org.xdty.kindle.contract.MainContract;
 import org.xdty.kindle.data.Mode;
+import org.xdty.kindle.di.DaggerMainComponent;
+import org.xdty.kindle.di.modules.MainModule;
 import org.xdty.kindle.module.Book;
-import org.xdty.kindle.module.Node;
 import org.xdty.kindle.view.BooksAdapter;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
-
-// TODO: mvp
-
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BooksAdapter.ItemClickListener {
+        implements MainContract.View, NavigationView.OnNavigationItemSelectedListener,
+        BooksAdapter.ItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
     @Inject
-    BookDataSource mBookDataSource;
+    MainContract.Presenter mPresenter;
+
     private RecyclerView mRecyclerView;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private BooksAdapter mBooksAdapter;
-    private Mode mMode = Mode.DAILY_DEALS;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Application.getAppComponent().inject(this);
+        DaggerMainComponent.builder()
+                .mainModule(new MainModule(this))
+                .build()
+                .inject(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.list);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,16 +71,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mBooksAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        loadBooks();
-    }
-
-    private void loadBooks() {
-        mBookDataSource.getBooks(mMode).subscribe(new Action1<List<Book>>() {
-            @Override
-            public void call(List<Book> books) {
-                mBooksAdapter.refresh(books);
-            }
-        });
+        mPresenter.start();
     }
 
     @Override
@@ -121,30 +114,30 @@ public class MainActivity extends AppCompatActivity
                 // start setting activity
                 return true;
             case R.id.nav_free_chinese:
-                mMode = Mode.FREE_CN;
+                mPresenter.setMode(Mode.FREE_CN);
                 break;
             case R.id.nav_free_english:
-                mMode = Mode.FREE_EN;
+                mPresenter.setMode(Mode.FREE_EN);
                 break;
             case R.id.nav_daily_deals:
-                mMode = Mode.DAILY_DEALS;
+                mPresenter.setMode(Mode.DAILY_DEALS);
                 break;
         }
-        loadBooks();
+        mPresenter.loadBooks();
         return true;
     }
 
     @Override
     public void onItemClick(Book book) {
         if (book.getNodes() == null) {
-            mBookDataSource.getBookNodes(book.getItemId()).subscribe(new Action1<List<Node>>() {
-                @Override
-                public void call(List<Node> nodes) {
-                    Log.e(TAG, "nodes: " + nodes);
-                }
-            });
+            mPresenter.getBookNodes(book);
         } else {
             Log.e(TAG, "nodes: " + book.getNodes());
         }
+    }
+
+    @Override
+    public void refresh(List<Book> books) {
+        mBooksAdapter.refresh(books);
     }
 }

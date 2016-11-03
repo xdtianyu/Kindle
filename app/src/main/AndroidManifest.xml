@@ -19,7 +19,7 @@
         </activity>
 
         <!-- use an alias in case we want to change the launch activity later without breaking
-             homescreen shortcuts.  Note must be defined after the targetActivity -->
+             home screen shortcuts.  Note must be defined after the targetActivity -->
         <activity-alias
             android:name=".Launcher"
             android:label="@string/app_name"
