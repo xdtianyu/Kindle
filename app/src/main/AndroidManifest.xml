@@ -18,20 +18,30 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!-- use an alias in case we want to change the launch activity later without breaking
-             home screen shortcuts.  Note must be defined after the targetActivity -->
+        <!--
+             use an alias in case we want to change the launch activity later without breaking
+             home screen shortcuts.  Note must be defined after the targetActivity
+        -->
         <activity-alias
             android:name=".Launcher"
             android:label="@string/app_name"
             android:targetActivity=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+                android:resource="@xml/shortcuts"/>
         </activity-alias>
+
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

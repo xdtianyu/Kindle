@@ -1,5 +1,6 @@
 package org.xdty.kindle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private BooksAdapter mBooksAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.e(TAG, "nodes: " + book.getNodes());
         }
+        Intent intent = new Intent(this, DetailActivity.class);
+        startActivity(intent);
     }
 
     @Override
