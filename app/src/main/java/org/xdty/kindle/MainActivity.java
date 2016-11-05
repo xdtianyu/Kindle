@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity
             Log.e(TAG, "nodes: " + book.getNodes());
         }
         Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(DetailActivity.ARG_BOOK, book);
+        intent.putExtra(DetailActivity.ARG_REVIEW, book.getEditorialReview());
         startActivity(intent);
     }
 
