@@ -27,6 +27,7 @@
 -keep class com.google.gson.stream.** { *; }
 -keepattributes *Annotation*
 -dontwarn javax.annotation.**
+-dontwarn javax.persistence.**
 -dontwarn javax.inject.**
 -dontwarn sun.misc.Unsafe
 

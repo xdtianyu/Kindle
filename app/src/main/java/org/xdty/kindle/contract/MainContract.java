@@ -16,6 +16,8 @@ public interface MainContract {
 
         void getBookNodes(Book book);
 
+        void getReviews(String itemId);
+
         void setMode(Mode mode);
     }
 }

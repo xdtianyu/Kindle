@@ -90,6 +90,7 @@ dependencies {
     compile 'com.google.dagger:dagger:2.6'
     apt 'com.google.dagger:dagger-compiler:2.6'
 
+    compile 'javax.persistence:persistence-api:1.0.2'
     compile 'io.requery:requery:1.0.1'
     compile 'io.requery:requery-android:1.0.1'
     apt 'io.requery:requery-processor:1.0.1'

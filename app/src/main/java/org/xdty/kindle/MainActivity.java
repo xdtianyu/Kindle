@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     public void onItemClick(Book book) {
         if (book.getNodes() == null) {
             mPresenter.getBookNodes(book);
+            mPresenter.getReviews(book.getItemId());
         } else {
             Log.e(TAG, "nodes: " + book.getNodes());
         }

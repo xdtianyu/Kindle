@@ -8,6 +8,7 @@ import org.xdty.kindle.data.BookDataSource;
 import org.xdty.kindle.data.Mode;
 import org.xdty.kindle.module.Book;
 import org.xdty.kindle.module.Node;
+import org.xdty.kindle.module.Review;
 
 import java.util.List;
 
@@ -52,6 +53,16 @@ public class MainPresenter implements MainContract.Presenter {
             @Override
             public void call(List<Node> nodes) {
                 Log.e(TAG, "nodes: " + nodes);
+            }
+        });
+    }
+
+    @Override
+    public void getReviews(String itemId) {
+        mBookDataSource.getReviews(itemId).subscribe(new Action1<List<Review>>() {
+            @Override
+            public void call(List<Review> reviews) {
+                Log.e(TAG, "reviews: " + reviews);
             }
         });
     }

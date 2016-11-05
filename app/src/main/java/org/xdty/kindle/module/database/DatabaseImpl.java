@@ -5,6 +5,7 @@ import org.xdty.kindle.module.Book;
 import org.xdty.kindle.module.Node;
 import org.xdty.kindle.module.NodeMap;
 import org.xdty.kindle.module.NodeRelation;
+import org.xdty.kindle.module.Review;
 
 import java.util.List;
 
@@ -62,6 +63,13 @@ public class DatabaseImpl implements Database {
         return mDataStore.select(Node.class)
                 .where(Node.NODE_ID.in(mDataStore.select(NodeRelation.ANCESTOR)
                         .where(NodeRelation.DESCENDANT.eq(nodeId)))).get().firstOrNull();
+    }
+
+    @Override
+    public List<Review> getReviewsSync(String itemId) {
+        return mDataStore.select(Review.class)
+                .limit(2)
+                .get().toList();
     }
 
     private List<Node> getBookNodesSync(String itemId, boolean withParent) {
