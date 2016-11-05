@@ -1,5 +1,7 @@
 package org.xdty.kindle.module;
 
+import android.os.Parcelable;
+
 import io.requery.Column;
 import io.requery.Entity;
 import io.requery.Generated;
@@ -9,7 +11,7 @@ import io.requery.Transient;
 
 @Table(name = "node")
 @Entity
-public interface INode {
+public interface INode extends Parcelable {
 
     @Key
     @Generated

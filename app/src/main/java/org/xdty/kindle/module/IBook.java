@@ -1,5 +1,7 @@
 package org.xdty.kindle.module;
 
+import android.os.Parcelable;
+
 import java.util.List;
 
 import io.requery.Column;
@@ -11,7 +13,7 @@ import io.requery.Transient;
 
 @Table(name = "book")
 @Entity
-public interface IBook {
+public interface IBook extends Parcelable {
 
     @Key
     @Generated
