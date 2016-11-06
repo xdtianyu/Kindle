@@ -67,9 +67,16 @@ public class DatabaseImpl implements Database {
 
     @Override
     public List<Review> getReviewsSync(String itemId) {
-        return mDataStore.select(Review.class)
-                .limit(2)
+        //return mDataStore.select(Review.class).where(Review.BOOK_ID.eq(itemId))
+        //        .get().toList();
+        return mDataStore.select(Review.class).where(Review.ITEM_ID.eq(itemId))
                 .get().toList();
+    }
+
+    @Override
+    public Book getBookSync(String itemId) {
+        return mDataStore.select(Book.class).where(Book.ITEM_ID.eq(itemId))
+                .get().first();
     }
 
     private List<Node> getBookNodesSync(String itemId, boolean withParent) {

@@ -16,9 +16,6 @@ public interface IReview extends Parcelable {
     @Generated
     int getId();
 
-    //@JoinTable(joinColumns = {
-    //        @JoinColumn(table = "book", referencedColumnName = "item_id")
-    //})
     //@ForeignKey(referencedColumn = "item_id")
     //@OneToOne
     //@Column(name = "item_id")

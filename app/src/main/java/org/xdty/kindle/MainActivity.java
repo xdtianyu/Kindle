@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -129,15 +128,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(Book book) {
-        if (book.getNodes() == null) {
-            mPresenter.getBookNodes(book);
-            mPresenter.getReviews(book.getItemId());
-        } else {
-            Log.e(TAG, "nodes: " + book.getNodes());
-        }
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.ARG_BOOK, book);
-        intent.putExtra(DetailActivity.ARG_REVIEW, book.getEditorialReview());
         startActivity(intent);
     }
 

@@ -8,4 +8,6 @@ public class Constants {
     public final static String DB_NAME = "books.db";
     public final static int DB_VERSION = 1;
 
+    public final static long CACHE_TIME = 30 * 60 * 1000;
+
 }

@@ -12,24 +12,26 @@ import org.xdty.kindle.contract.DetailContract;
 import org.xdty.kindle.di.DaggerDetailComponent;
 import org.xdty.kindle.di.modules.DetailModule;
 import org.xdty.kindle.module.Book;
+import org.xdty.kindle.module.Review;
 
 import javax.inject.Inject;
+
+import static org.xdty.kindle.R.id.review;
 
 public class DetailActivity extends AppCompatActivity implements DetailContract.View {
 
     public final static String ARG_BOOK = "book";
-    public final static String ARG_REVIEW = "review";
     private static final String TAG = DetailActivity.class.getSimpleName();
     @Inject
     DetailContract.Presenter mPresenter;
+
+    private TextView mReviewText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String review = getIntent().getStringExtra(ARG_REVIEW);
         Book book = getIntent().getParcelableExtra(ARG_BOOK);
-
         DaggerDetailComponent.builder().detailModule(new DetailModule(this))
                 .build()
                 .inject(this);
@@ -47,8 +49,15 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
             }
         });
 
-        TextView reviewText = (TextView) findViewById(R.id.review);
-        reviewText.setText(review);
+        mReviewText = (TextView) findViewById(review);
+
         setTitle(book.getTitle());
+
+        mPresenter.updateReview(book.getItemId());
+    }
+
+    @Override
+    public void refreshReview(Review review) {
+        mReviewText.setText(review.getEditorialReview());
     }
 }

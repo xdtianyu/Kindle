@@ -6,9 +6,12 @@ import org.xdty.kindle.module.Books;
 import org.xdty.kindle.module.Node;
 import org.xdty.kindle.module.Review;
 import org.xdty.kindle.module.database.Database;
+import org.xdty.kindle.utils.Constants;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -25,6 +28,10 @@ public class BookRepository implements BookDataSource {
     @Inject
     Database mDatabase;
 
+    private Books mBooks;
+
+    private Map<String, Review> mReviewMap = new HashMap<>();
+
     public BookRepository() {
         Application.getAppComponent().inject(this);
     }
@@ -35,8 +42,22 @@ public class BookRepository implements BookDataSource {
             @Override
             public void call(Subscriber<? super List<Book>> subscriber) {
                 try {
-                    Books books = mBookService.getBooks().execute().body();
-                    subscriber.onNext(books.getBooks());
+                    if (mBooks == null || (System.currentTimeMillis() - mBooks.getTimestamp()
+                            > Constants.CACHE_TIME)) {
+                        mBooks = mBookService.getBooks().execute().body();
+                        mBooks.setTimestamp(System.currentTimeMillis());
+
+                        mReviewMap.clear();
+
+                        // cache reviews
+                        for (Book book : mBooks.getBooks()) {
+                            Review review = new Review();
+                            review.setItemId(book.getItemId());
+                            review.setEditorialReview(book.getEditorialReview());
+                            mReviewMap.put(book.getItemId(), review);
+                        }
+                    }
+                    subscriber.onNext(mBooks.getBooks());
                     subscriber.onCompleted();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -97,6 +118,33 @@ public class BookRepository implements BookDataSource {
             @Override
             public void call(Subscriber<? super List<Review>> subscriber) {
                 subscriber.onNext(mDatabase.getReviewsSync(itemId));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Review> getReview(final String itemId) {
+        return Observable.create(new Observable.OnSubscribe<Review>() {
+            @Override
+            public void call(Subscriber<? super Review> subscriber) {
+                if (mReviewMap.containsKey(itemId)) {
+                    subscriber.onNext(mReviewMap.get(itemId));
+                } else {
+                    subscriber.onNext(mDatabase.getReviewsSync(itemId).get(0));
+                }
+
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Book> getBook(final String itemId) {
+        return Observable.create(new Observable.OnSubscribe<Book>() {
+            @Override
+            public void call(Subscriber<? super Book> subscriber) {
+                subscriber.onNext(mDatabase.getBookSync(itemId));
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

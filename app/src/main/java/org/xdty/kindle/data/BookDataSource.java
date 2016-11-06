@@ -22,4 +22,7 @@ public interface BookDataSource {
 
     Observable<List<Review>> getReviews(String itemId);
 
+    Observable<Review> getReview(String itemId);
+
+    Observable<Book> getBook(String itemId);
 }

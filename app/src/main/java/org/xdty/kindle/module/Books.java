@@ -6,6 +6,7 @@ public class Books {
 
     private List<Book> books;
     private String time;
+    private long timestamp;
 
     public List<Book> getBooks() {
         return books;
@@ -21,5 +22,13 @@ public class Books {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

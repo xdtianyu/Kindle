@@ -17,4 +17,6 @@ public interface Database {
     Node getNodeParentSync(long nodeId);
 
     List<Review> getReviewsSync(String itemId);
+
+    Book getBookSync(String itemId);
 }
