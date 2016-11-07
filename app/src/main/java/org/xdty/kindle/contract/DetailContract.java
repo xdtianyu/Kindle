@@ -1,15 +1,18 @@
 package org.xdty.kindle.contract;
 
-import org.xdty.kindle.module.Review;
+import org.xdty.kindle.module.Book;
 
 public interface DetailContract {
 
     interface View extends BaseView<Presenter> {
-        void refreshReview(Review review);
+        void updateReview(String review);
+
+        void openTab(String url);
     }
 
     interface Presenter extends BasePresenter {
+        void start(Book itemId);
 
-        void updateReview(String itemId);
+        void clickFab();
     }
 }

@@ -1,8 +1,10 @@
 package org.xdty.kindle;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,7 +14,6 @@ import org.xdty.kindle.contract.DetailContract;
 import org.xdty.kindle.di.DaggerDetailComponent;
 import org.xdty.kindle.di.modules.DetailModule;
 import org.xdty.kindle.module.Book;
-import org.xdty.kindle.module.Review;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,6 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Book book = getIntent().getParcelableExtra(ARG_BOOK);
         DaggerDetailComponent.builder().detailModule(new DetailModule(this))
                 .build()
                 .inject(this);
@@ -44,20 +44,28 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                mPresenter.clickFab();
             }
         });
 
         mReviewText = (TextView) findViewById(review);
 
+        Book book = getIntent().getParcelableExtra(ARG_BOOK);
         setTitle(book.getTitle());
 
-        mPresenter.updateReview(book.getItemId());
+        mPresenter.start(book);
     }
 
     @Override
-    public void refreshReview(Review review) {
-        mReviewText.setText(review.getEditorialReview());
+    public void updateReview(String review) {
+        mReviewText.setText(review);
+    }
+
+    public void openTab(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.addDefaultShareMenuItem();
+        builder.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(url));
     }
 }

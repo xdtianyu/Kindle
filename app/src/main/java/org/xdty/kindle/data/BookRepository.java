@@ -30,7 +30,8 @@ public class BookRepository implements BookDataSource {
 
     private Books mBooks;
 
-    private Map<String, Review> mReviewMap = new HashMap<>();
+    private Map<String, Review> mReviewCache = new HashMap<>();
+    private Map<String, Book> mBookCache = new HashMap<>();
 
     public BookRepository() {
         Application.getAppComponent().inject(this);
@@ -47,14 +48,16 @@ public class BookRepository implements BookDataSource {
                         mBooks = mBookService.getBooks().execute().body();
                         mBooks.setTimestamp(System.currentTimeMillis());
 
-                        mReviewMap.clear();
+                        mReviewCache.clear();
+                        mBookCache.clear();
 
                         // cache reviews
                         for (Book book : mBooks.getBooks()) {
                             Review review = new Review();
                             review.setItemId(book.getItemId());
                             review.setEditorialReview(book.getEditorialReview());
-                            mReviewMap.put(book.getItemId(), review);
+                            mReviewCache.put(book.getItemId(), review);
+                            mBookCache.put(book.getItemId(), book);
                         }
                     }
                     subscriber.onNext(mBooks.getBooks());
@@ -128,8 +131,8 @@ public class BookRepository implements BookDataSource {
         return Observable.create(new Observable.OnSubscribe<Review>() {
             @Override
             public void call(Subscriber<? super Review> subscriber) {
-                if (mReviewMap.containsKey(itemId)) {
-                    subscriber.onNext(mReviewMap.get(itemId));
+                if (mReviewCache.containsKey(itemId)) {
+                    subscriber.onNext(mReviewCache.get(itemId));
                 } else {
                     subscriber.onNext(mDatabase.getReviewsSync(itemId).get(0));
                 }
@@ -144,7 +147,12 @@ public class BookRepository implements BookDataSource {
         return Observable.create(new Observable.OnSubscribe<Book>() {
             @Override
             public void call(Subscriber<? super Book> subscriber) {
-                subscriber.onNext(mDatabase.getBookSync(itemId));
+                if (mBookCache.containsKey(itemId)) {
+                    subscriber.onNext(mBookCache.get(itemId));
+                } else {
+                    subscriber.onNext(mDatabase.getBookSync(itemId));
+                }
+
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
