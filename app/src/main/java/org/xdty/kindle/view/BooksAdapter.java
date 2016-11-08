@@ -70,6 +70,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         private TextView title;
         private TextView author;
         private TextView pages;
+        private TextView price;
 
         ViewHolder(View view) {
             super(view);
@@ -78,6 +79,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
             title = (TextView) view.findViewById(R.id.title);
             author = (TextView) view.findViewById(R.id.author);
             pages = (TextView) view.findViewById(R.id.pages);
+            price = (TextView) view.findViewById(R.id.price);
             view.setOnClickListener(this);
         }
 
@@ -86,10 +88,15 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
             title.setText(book.getTitle());
             author.setText(book.getAuthor());
             pages.setText(book.getPages());
+            price.setText(getString(R.string.price, book.getPrice()));
 
             mGlideRequest.load(book.getLargeImageUrl())
                     .crossFade()
                     .into(thumbnail);
+        }
+
+        String getString(int resId, Object... formatArgs) {
+            return itemView.getContext().getString(resId, formatArgs);
         }
 
         @Override

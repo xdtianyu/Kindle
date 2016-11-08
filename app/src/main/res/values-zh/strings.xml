@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kindle</string>
+    <string name="action_settings">设置</string>
+    <string name="daily_deals">今日特惠</string>
+    <string name="free_chinese">免费中文</string>
+    <string name="free_english">免费外文</string>
+    <string name="navigation_drawer_close">关闭导航栏</string>
+    <string name="navigation_drawer_open">打开导航栏</string>
+    <string name="price">￥%1$.2f</string>
+    <string name="search">搜索</string>
+    <string name="settings">设置</string>
+    <string name="shortcut_search_disabled">搜索不可用</string>
+    <string name="thumbnail">缩略图</string>
+</resources>
