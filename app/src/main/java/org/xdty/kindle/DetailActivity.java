@@ -1,12 +1,14 @@
 package org.xdty.kindle;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
@@ -58,7 +60,12 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @Override
     public void updateReview(String review) {
-        mReviewText.setText(review);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mReviewText.setText(Html.fromHtml(review, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            //noinspection deprecation
+            mReviewText.setText(Html.fromHtml(review));
+        }
     }
 
     public void openTab(String url) {
