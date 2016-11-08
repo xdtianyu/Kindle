@@ -161,6 +161,11 @@ public class AppModule {
                 }
             }
 
+            File parent = cacheFile.getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                Log.d(TAG, "database directory create failed.");
+            }
+
             FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
 
             int bufferSize = 1024;
