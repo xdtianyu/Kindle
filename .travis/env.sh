@@ -4,7 +4,7 @@
 
 export GIT_TAG=$(git describe --abbrev=0 --tags)
  
-if [ -n "$encrypted_fcd823279b44_key" ] ; then
+if [ -z "$encrypted_fcd823279b44_key" ] ; then
     # It's running from pull requests or forks, set vars.
      
     TEXT="I_AM_PUBLIC_AND_NOT_USED_FOR_RELEASE"
